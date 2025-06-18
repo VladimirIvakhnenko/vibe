@@ -1,6 +1,5 @@
 package org.audio.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import org.audio.models.TrackMatch;
 
 import java.util.List;
@@ -8,129 +7,95 @@ import java.util.List;
 /**
  * DTO для результата поиска треков по аудио
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
+
+import org.audio.models.AudioProcessingResult;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class MatchResponse {
-    private boolean success;
-    private String errorMessage;
-    private List<TrackMatchDto> matches;
-    private ProcessingStatsDto stats;
+    private final boolean success;
+    private final String message;
+    private final List<TrackMatchDto> matches;
+    private final ProcessingStatsDto stats;
 
-    // Конструкторы
-    public MatchResponse() {}
-
-    public MatchResponse(List<TrackMatchDto> matches, ProcessingStatsDto stats) {
-        this.success = true;
+    public MatchResponse(boolean success, String message,
+                         List<TrackMatchDto> matches, ProcessingStatsDto stats) {
+        this.success = success;
+        this.message = message;
         this.matches = matches;
         this.stats = stats;
     }
 
-    public MatchResponse(String errorMessage) {
-        this.success = false;
-        this.errorMessage = errorMessage;
+    public static MatchResponse fromProcessingResult(AudioProcessingResult result) {
+        return new MatchResponse(
+                true,
+                result.hasMatches() ? "Matches found" : "No matches found",
+                result.hasMatches() ?
+                        Arrays.stream(result.getMatches())
+                                .map(TrackMatchDto::fromTrackMatch)
+                                .collect(Collectors.toList()) :
+                        null,
+                new ProcessingStatsDto(
+                        result.getSamplesProcessed(),
+                        result.getAudioDurationMs()
+                )
+        );
     }
 
-    // Геттеры и сеттеры
-    public boolean isSuccess() {
-        return success;
-    }
+    // Getters
+    public boolean isSuccess() { return success; }
+    public String getMessage() { return message; }
+    public List<TrackMatchDto> getMatches() { return matches; }
+    public ProcessingStatsDto getStats() { return stats; }
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public List<TrackMatchDto> getMatches() {
-        return matches;
-    }
-
-    public ProcessingStatsDto getStats() {
-        return stats;
-    }
-
-
-
-    /**
-     * DTO для информации о совпадении трека
-     */
+    // Nested DTOs
     public static class TrackMatchDto {
-        private String trackId;
-        private String trackTitle;
-        private String artist;
-        private double confidence;
-        private int matchScore;
-        private long offsetMs;
-        private String albumCoverUrl;
+        private final String trackId;
+        private final String title;
+        private final float confidence;
+        private final int matchScore;
+        private final long offsetMs;
 
-        public TrackMatchDto() {}
-
-        public TrackMatchDto(String trackId, String trackTitle, String artist,
-                             double confidence, int matchScore, long offsetMs) {
+        public TrackMatchDto(String trackId, String title,
+                             float confidence, int matchScore, long offsetMs) {
             this.trackId = trackId;
-            this.trackTitle = trackTitle;
-            this.artist = artist;
+            this.title = title;
             this.confidence = confidence;
             this.matchScore = matchScore;
             this.offsetMs = offsetMs;
         }
 
-        public String getTrackId() {
-            return trackId;
+        public static TrackMatchDto fromTrackMatch(TrackMatch match) {
+            return new TrackMatchDto(
+                    match.getTrackId(),
+                    match.getTrackTitle(),
+                    match.getConfidence(),
+                    match.getMatchScore(),
+                    match.getOffsetMs()
+            );
         }
 
-        public String getTrackTitle() {
-            return trackTitle;
-        }
-
-        public String getArtist() {
-            return artist;
-        }
-
-        public double getConfidence() {
-            return confidence;
-        }
-
-        public int getMatchScore() {
-            return matchScore;
-        }
-
-        public long getOffsetMs() {
-            return offsetMs;
-        }
-
-        public String getAlbumCoverUrl() {
-            return albumCoverUrl;
-        }
-
-        public void setAlbumCoverUrl(String albumCoverUrl) {
-            this.albumCoverUrl = albumCoverUrl;
-        }
+        // Getters
+        public String getTrackId() { return trackId; }
+        public String getTitle() { return title; }
+        public float getConfidence() { return confidence; }
+        public int getMatchScore() { return matchScore; }
+        public long getOffsetMs() { return offsetMs; }
     }
 
-    /**
-     * DTO для статистики обработки аудио
-     */
     public static class ProcessingStatsDto {
-        private long processingTimeMs;
-        private int audioLengthMs;
-        private int samplesProcessed;
+        private final int samplesProcessed;
+        private final int durationMs;
 
-        public ProcessingStatsDto() {}
-
-        public ProcessingStatsDto(long processingTimeMs, int audioLengthMs, int samplesProcessed) {
-            this.processingTimeMs = processingTimeMs;
-            this.audioLengthMs = audioLengthMs;
+        public ProcessingStatsDto(int samplesProcessed, int durationMs) {
             this.samplesProcessed = samplesProcessed;
+            this.durationMs = durationMs;
         }
 
-        public long getProcessingTimeMs() {
-            return processingTimeMs;
-        }
-
-        public int getAudioLengthMs() {
-            return audioLengthMs;
-        }
-
-        public int getSamplesProcessed() {
-            return samplesProcessed;
-        }
+        // Getters
+        public int getSamplesProcessed() { return samplesProcessed; }
+        public int getDurationMs() { return durationMs; }
     }
 }

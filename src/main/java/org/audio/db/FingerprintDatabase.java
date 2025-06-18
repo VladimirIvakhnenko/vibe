@@ -5,11 +5,10 @@ import org.audio.models.TrackMatch;
 import java.util.List;
 import java.util.Optional;
 
-@FunctionalInterface
-public interface FingerprintDatabase {
-    Optional<TrackMatch> findBestMatch(List<Long> queryHashes);
+public abstract class FingerprintDatabase {
+    public abstract Optional<TrackMatch> findBestMatch(List<Long> queryHashes);
 
-    default void addFingerprints(String trackId, List<Long> fingerprints) {
-        throw new UnsupportedOperationException("Add operation not supported");
-    }
+    public abstract TrackMatch[] bestMatches(List<Long> queryHashes, int limit, float minConfidence);
+
+    public abstract void addTrack(String trackId, String trackName, List<Long> fingerprints);
 }
