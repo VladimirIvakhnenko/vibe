@@ -12,8 +12,8 @@ import java.util.List;
 
 /**
  * REST-контроллер для работы с системой музыкальных рекомендаций.
- * Предоставляет API для получения рекомендаций, лайков и дизлайков треков.
- * Вся бизнес-логика делегируется сервисам.
+ * Предоставляет API для получения рекомендаций, лайков, дизлайков и прослушиваний.
+ * Вся бизнес-логика делегируется соответствующим сервисам.
  */
 @RestController
 @RequestMapping("/api/recommendations")
@@ -46,9 +46,9 @@ public class RecommendationController {
     }
 
     /**
-     * Поставить лайк треку.
-     * @param request LikeRequest с trackId
-     * @return HTTP 200 OK
+     * Обрабатывает лайк трека. Увеличивает вес рёбер (+1.0).
+     * @param request Запрос, содержащий ID трека.
+     * @return HTTP 200 OK в случае успеха.
      */
     @PostMapping("/like")
     public ResponseEntity<Void> likeTrack(@RequestBody LikeRequest request) {
@@ -57,9 +57,9 @@ public class RecommendationController {
     }
 
     /**
-     * Поставить дизлайк треку.
-     * @param request LikeRequest с trackId
-     * @return HTTP 200 OK
+     * Обрабатывает дизлайк трека. Уменьшает вес рёбер (-1.0).
+     * @param request Запрос, содержащий ID трека.
+     * @return HTTP 200 OK в случае успеха.
      */
     @PostMapping("/dislike")
     public ResponseEntity<Void> dislikeTrack(@RequestBody LikeRequest request) {
@@ -68,9 +68,9 @@ public class RecommendationController {
     }
 
     /**
-     * Зарегистрировать полное прослушивание трека.
-     * @param request LikeRequest с trackId
-     * @return HTTP 200 OK
+     * Регистрирует полное прослушивание трека. Увеличивает вес рёбер (+0.5).
+     * @param request Запрос, содержащий ID трека.
+     * @return HTTP 200 OK в случае успеха.
      */
     @PostMapping("/listen")
     public ResponseEntity<Void> listenTrack(@RequestBody LikeRequest request) {

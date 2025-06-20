@@ -19,7 +19,7 @@ public class TrackGraph {
     private final SimpleWeightedGraph<Track, DefaultWeightedEdge> graph =
             new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
     /** Индекс для быстрого поиска трека по id */
-    private final Map<String, Track> trackByIdIndex = new HashMap<>();
+    private final Map<String, Track> trackMap = new HashMap<>();
 
     /**
      * Получить сам граф (для алгоритмов поиска и рекомендаций)
@@ -29,21 +29,21 @@ public class TrackGraph {
     }
 
     /**
-     * Добавить трек в граф и индекс.
+     * Добавляет трек в граф и в карту для быстрого доступа.
      * @param track трек для добавления
      */
-    public void addTrack(Track track) {
+    public void addVertex(Track track) {
         graph.addVertex(track);
-        trackByIdIndex.put(track.getId(), track);
+        trackMap.put(track.getId(), track);
     }
 
     /**
      * Найти трек по его id.
-     * @param id идентификатор трека
-     * @return Optional с треком, если найден
+     * @param id ID трека
+     * @return Track или null, если не найден
      */
-    public Optional<Track> getTrackById(String id) {
-        return Optional.ofNullable(trackByIdIndex.get(id));
+    public Track getTrackById(String id) {
+        return trackMap.get(id);
     }
 
     /**
@@ -84,5 +84,21 @@ public class TrackGraph {
         return graph.containsVertex(track) ? graph.edgesOf(track).stream()
                 .map(e -> graph.getEdgeSource(e).equals(track) ? graph.getEdgeTarget(e) : graph.getEdgeSource(e))
                 .collect(java.util.stream.Collectors.toSet()) : java.util.Collections.emptySet();
+    }
+
+    public double getEdgeWeight(DefaultWeightedEdge edge) {
+        return graph.getEdgeWeight(edge);
+    }
+
+    public void setEdgeWeight(DefaultWeightedEdge edge, double weight) {
+        graph.setEdgeWeight(edge, weight);
+    }
+
+    public void addEdge(Track source, Track target) {
+        graph.addEdge(source, target);
+    }
+
+    public DefaultWeightedEdge getEdge(Track source, Track target) {
+        return graph.getEdge(source, target);
     }
 } 
