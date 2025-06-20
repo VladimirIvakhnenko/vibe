@@ -106,7 +106,7 @@ public class FingerprintGenerator {
         for (int i = 0; i < window.length; i++) {
             fftInput[i] = new FFT.Complex(window[i], 0);
         }
-        return FFT.fft(fftInput);
+        return FFT.fftWithPadding(fftInput);
     }
 
     private static List<Peak> findSignificantPeaks(FFT.Complex[] spectrum, int windowOffset) {
