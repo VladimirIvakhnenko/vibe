@@ -33,20 +33,11 @@ public class RecommendationService {
 
     /**
      * Сгенерировать список рекомендованных треков для пользователя.
-     * Алгоритм:
-     * 1. Берёт до 10 лайкнутых треков пользователя.
-     * 2. Для каждого запускает BFS по графу (глубина 2).
-     * 3. Суммирует веса связей для найденных треков.
-     * 4. Исключает уже лайкнутые и дизлайкнутые треки.
-     * 5. Сортирует по весу и возвращает top-N.
-     *
-     * @param userId идентификатор пользователя
      * @param limit максимальное количество рекомендаций
      * @return список рекомендованных треков
      */
-    public List<Track> recommendTracks(String userId, int limit) {
-        UserPreference user = userPreferenceRepository.findByUserId(userId)
-                .orElse(new UserPreference(userId));
+    public List<Track> recommendTracks(int limit) {
+        UserPreference user = userPreferenceRepository.get();
 
         Set<String> likedTrackIds = user.getLikedTrackIds();
         Set<String> dislikedTrackIds = user.getDislikedTrackIds();
@@ -92,11 +83,28 @@ public class RecommendationService {
             }
         }
 
-        // 5. Сортируем по весу и возвращаем top-N
-        return recommendationScores.entrySet().stream()
+        // 5. Сортируем по весу и берём top-20
+        List<Track> topTracks = recommendationScores.entrySet().stream()
                 .sorted(Map.Entry.<Track, Double>comparingByValue().reversed())
-                .limit(limit)
+                .limit(20)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
+
+        // Случайно выбираем limit треков из top-20
+        Collections.shuffle(topTracks);
+        List<Track> result = topTracks.stream().limit(limit).collect(Collectors.toList());
+
+        // Случайный сдвиг: с вероятностью 20% меняем местами соседей
+        Random random = new Random();
+        for (int i = 0; i < result.size() - 1; i++) {
+            if (random.nextDouble() < 0.2) {
+                // Меняем местами i и i+1
+                Track tmp = result.get(i);
+                result.set(i, result.get(i + 1));
+                result.set(i + 1, tmp);
+                i++; // чтобы не сдвигать только что перемешанных
+            }
+        }
+        return result;
     }
 } 

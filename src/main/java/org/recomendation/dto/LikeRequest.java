@@ -1,16 +1,10 @@
 package org.recomendation.dto;
 
+/**
+ * DTO для передачи идентификатора трека при лайке, дизлайке или прослушивании.
+ */
 public class LikeRequest {
-    private String userId;
     private String trackId;
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
 
     public String getTrackId() {
         return trackId;

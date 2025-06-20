@@ -2,19 +2,13 @@ package org.recomendation.db;
 
 import org.recomendation.models.UserPreference;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-
+/**
+ * Репозиторий для хранения предпочтений единственного пользователя.
+ */
 public class UserPreferenceRepository {
-    private final Map<String, UserPreference> userPreferences = new ConcurrentHashMap<>();
+    private final UserPreference userPreference = new UserPreference();
 
-    public Optional<UserPreference> findByUserId(String userId) {
-        return Optional.ofNullable(userPreferences.get(userId));
-    }
-
-    public UserPreference save(UserPreference userPreference) {
-        userPreferences.put(userPreference.getUserId(), userPreference);
+    public UserPreference get() {
         return userPreference;
     }
 } 

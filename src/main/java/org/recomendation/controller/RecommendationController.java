@@ -34,38 +34,47 @@ public class RecommendationController {
     }
 
     /**
-     * Получить список рекомендованных треков для пользователя.
-     * @param userId идентификатор пользователя
+     * Получить список рекомендованных треков.
      * @param limit максимальное количество рекомендаций (по умолчанию 10)
      * @return список треков в формате RecommendationResponse
      */
     @GetMapping
     public ResponseEntity<RecommendationResponse> getRecommendations(
-            @RequestParam("user_id") String userId,
             @RequestParam(value = "limit", defaultValue = "10") int limit) {
-        List<Track> recommendedTracks = recommendationService.recommendTracks(userId, limit);
+        List<Track> recommendedTracks = recommendationService.recommendTracks(limit);
         return ResponseEntity.ok(new RecommendationResponse(recommendedTracks));
     }
 
     /**
-     * Поставить лайк треку от имени пользователя.
-     * @param request LikeRequest с userId и trackId
+     * Поставить лайк треку.
+     * @param request LikeRequest с trackId
      * @return HTTP 200 OK
      */
     @PostMapping("/like")
     public ResponseEntity<Void> likeTrack(@RequestBody LikeRequest request) {
-        likeService.likeTrack(request.getUserId(), request.getTrackId());
+        likeService.likeTrack(request.getTrackId());
         return ResponseEntity.ok().build();
     }
 
     /**
-     * Поставить дизлайк треку от имени пользователя.
-     * @param request LikeRequest с userId и trackId
+     * Поставить дизлайк треку.
+     * @param request LikeRequest с trackId
      * @return HTTP 200 OK
      */
     @PostMapping("/dislike")
     public ResponseEntity<Void> dislikeTrack(@RequestBody LikeRequest request) {
-        likeService.dislikeTrack(request.getUserId(), request.getTrackId());
+        likeService.dislikeTrack(request.getTrackId());
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Зарегистрировать полное прослушивание трека.
+     * @param request LikeRequest с trackId
+     * @return HTTP 200 OK
+     */
+    @PostMapping("/listen")
+    public ResponseEntity<Void> listenTrack(@RequestBody LikeRequest request) {
+        likeService.listenTrack(request.getTrackId());
         return ResponseEntity.ok().build();
     }
 } 

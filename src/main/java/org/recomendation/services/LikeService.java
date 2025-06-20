@@ -6,14 +6,14 @@ import org.recomendation.models.Track;
 import org.recomendation.models.UserPreference;
 
 /**
- * LikeService отвечает за обработку лайков и дизлайков пользователей.
+ * LikeService отвечает за обработку лайков и дизлайков пользователя.
  * При лайке/дизлайке обновляет веса связей между треками в графе.
  * Также хранит и обновляет предпочтения пользователя (лайки/дизлайки).
  */
 public class LikeService {
     /** Граф треков, где обновляются веса рёбер */
     private final TrackGraph trackGraph;
-    /** Репозиторий для хранения предпочтений пользователей */
+    /** Репозиторий для хранения предпочтений пользователя */
     private final UserPreferenceRepository userPreferenceRepository;
 
     /**
@@ -27,18 +27,15 @@ public class LikeService {
     }
 
     /**
-     * Обработать лайк трека пользователем.
-     * Увеличивает вес связей между этим треком и всеми другими лайкнутыми треками пользователя.
-     * @param userId идентификатор пользователя
+     * Обработать лайк трека.
+     * Увеличивает вес связей между этим треком и всеми другими лайкнутыми треками.
      * @param trackId идентификатор трека
      */
-    public void likeTrack(String userId, String trackId) {
-        UserPreference user = userPreferenceRepository.findByUserId(userId)
-                .orElseGet(() -> userPreferenceRepository.save(new UserPreference(userId)));
+    public void likeTrack(String trackId) {
+        UserPreference user = userPreferenceRepository.get();
         Track likedTrack = trackGraph.getTrackById(trackId)
                 .orElseThrow(() -> new IllegalArgumentException("Track not found"));
 
-        // Для каждого другого лайкнутого трека увеличиваем вес связи
         user.getLikedTrackIds().stream()
                 .filter(otherTrackId -> !otherTrackId.equals(trackId))
                 .forEach(otherTrackId -> {
@@ -48,22 +45,18 @@ public class LikeService {
                 });
 
         user.getLikedTrackIds().add(trackId);
-        userPreferenceRepository.save(user);
     }
 
     /**
-     * Обработать дизлайк трека пользователем.
-     * Уменьшает вес связей между этим треком и всеми лайкнутыми треками пользователя.
-     * @param userId идентификатор пользователя
+     * Обработать дизлайк трека.
+     * Уменьшает вес связей между этим треком и всеми лайкнутыми треками.
      * @param trackId идентификатор трека
      */
-    public void dislikeTrack(String userId, String trackId) {
-        UserPreference user = userPreferenceRepository.findByUserId(userId)
-                .orElseGet(() -> userPreferenceRepository.save(new UserPreference(userId)));
+    public void dislikeTrack(String trackId) {
+        UserPreference user = userPreferenceRepository.get();
         Track dislikedTrack = trackGraph.getTrackById(trackId)
                 .orElseThrow(() -> new IllegalArgumentException("Track not found"));
         
-        // Для каждого лайкнутого трека уменьшаем вес связи
         user.getLikedTrackIds().stream()
                 .filter(otherTrackId -> !otherTrackId.equals(trackId))
                 .forEach(otherTrackId -> {
@@ -73,7 +66,25 @@ public class LikeService {
                 });
 
         user.getDislikedTrackIds().add(trackId);
-        user.getLikedTrackIds().remove(trackId); // Если трек был лайкнут, убираем лайк
-        userPreferenceRepository.save(user);
+        user.getLikedTrackIds().remove(trackId);
+    }
+
+    /**
+     * Зарегистрировать полное прослушивание трека.
+     * Увеличивает вес связей между этим треком и всеми лайкнутыми треками на 0.5.
+     * @param trackId идентификатор трека
+     */
+    public void listenTrack(String trackId) {
+        UserPreference user = userPreferenceRepository.get();
+        Track listenedTrack = trackGraph.getTrackById(trackId)
+                .orElseThrow(() -> new IllegalArgumentException("Track not found"));
+
+        user.getLikedTrackIds().stream()
+                .filter(otherTrackId -> !otherTrackId.equals(trackId))
+                .forEach(otherTrackId -> {
+                    trackGraph.getTrackById(otherTrackId).ifPresent(otherTrack -> {
+                        trackGraph.updateEdgeWeight(listenedTrack, otherTrack, 0.5);
+                    });
+                });
     }
 } 
