@@ -1,13 +1,17 @@
 package org.textsearch.services;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
 import org.textsearch.indexing.InvertedIndex;
 import org.textsearch.models.TextSearchResult;
 import org.textsearch.models.TrackMetadata;
 import org.textsearch.utils.SynonymManager;
-import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Реализация сервиса текстового поиска
