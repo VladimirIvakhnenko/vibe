@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.*;
 
+@SuppressWarnings("unchecked")
 public class FingerprintGenerator {
     private static final int WINDOW_SIZE = 4096;
     private static final int OVERLAP = 2048;
@@ -173,5 +174,19 @@ public class FingerprintGenerator {
         for (int i = 0; i < window.length; i++) {
             window[i] *= hannWindow[i];
         }
+    }
+
+    public static List<Peak> extractPeaks(double[] audioData) {
+        double[] hannWindow = precomputeHannWindow(WINDOW_SIZE);
+        List<Peak> allPeaks = new ArrayList<>();
+        for (int i = 0; i < (audioData.length + OVERLAP - 1) / OVERLAP; i++) {
+            int start = i * OVERLAP;
+            int end = Math.min(start + WINDOW_SIZE, audioData.length);
+            double[] window = Arrays.copyOfRange(audioData, start, end);
+            applyWindow(window, hannWindow);
+            FFT.Complex[] fftOutput = computeFFT(window);
+            allPeaks.addAll(findSignificantPeaks(fftOutput, start));
+        }
+        return allPeaks;
     }
 }
