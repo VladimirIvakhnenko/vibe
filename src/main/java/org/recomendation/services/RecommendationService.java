@@ -33,6 +33,11 @@ public class RecommendationService {
 
     /**
      * Сгенерировать список рекомендованных треков для пользователя.
+     * 4. Исключает уже лайкнутые и дизлайкнутые треки.
+     * 5. Сортирует по весу, берёт top-20.
+     * 6. Из них случайно выбирает `limit` треков.
+     * 7. Применяет "случайный сдвиг" для дополнительной рандомизации.
+     *
      * @param limit максимальное количество рекомендаций
      * @return список рекомендованных треков
      */
@@ -90,11 +95,11 @@ public class RecommendationService {
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 
-        // Случайно выбираем limit треков из top-20
+        // 6. Случайно выбираем limit треков из top-20
         Collections.shuffle(topTracks);
         List<Track> result = topTracks.stream().limit(limit).collect(Collectors.toList());
 
-        // Случайный сдвиг: с вероятностью 20% меняем местами соседей
+        // 7. Случайный сдвиг: с вероятностью 20% меняем местами соседей
         Random random = new Random();
         for (int i = 0; i < result.size() - 1; i++) {
             if (random.nextDouble() < 0.2) {

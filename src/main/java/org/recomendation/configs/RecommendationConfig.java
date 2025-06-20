@@ -8,9 +8,18 @@ import org.recomendation.services.RecommendationService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Spring-конфигурация для модуля рекомендаций.
+ * Определяет бины (компоненты), управляемые Spring, и настраивает их зависимости.
+ */
 @Configuration
 public class RecommendationConfig {
 
+    /**
+     * Создаёт бин TrackGraph как синглтон.
+     * При старте приложения граф заполняется тестовыми данными (треками и связями),
+     * чтобы можно было сразу тестировать рекомендации.
+     */
     @Bean
     public TrackGraph trackGraph() {
         TrackGraph graph = new TrackGraph();
@@ -38,16 +47,28 @@ public class RecommendationConfig {
         return graph;
     }
 
+    /**
+     * Создаёт бин UserPreferenceRepository как синглтон.
+     * Хранит предпочтения единственного пользователя.
+     */
     @Bean
     public UserPreferenceRepository userPreferenceRepository() {
         return new UserPreferenceRepository();
     }
 
+    /**
+     * Создаёт бин LikeService. Spring автоматически внедряет
+     * зависимости (trackGraph, userPreferenceRepository) из контекста.
+     */
     @Bean
     public LikeService likeService(TrackGraph trackGraph, UserPreferenceRepository userPreferenceRepository) {
         return new LikeService(trackGraph, userPreferenceRepository);
     }
 
+    /**
+     * Создаёт бин RecommendationService. Spring автоматически внедряет
+     * зависимости (trackGraph, userPreferenceRepository) из контекста.
+     */
     @Bean
     public RecommendationService recommendationService(TrackGraph trackGraph, UserPreferenceRepository userPreferenceRepository) {
         return new RecommendationService(trackGraph, userPreferenceRepository);
