@@ -1,13 +1,12 @@
 package org.textsearch.services;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.textsearch.db.TextSearchDatabase;
 import org.textsearch.indexing.InvertedIndex;
 import org.textsearch.models.TextSearchResult;
 import org.textsearch.models.TrackMetadata;
@@ -19,72 +18,25 @@ import org.textsearch.utils.SynonymManager;
 @Service
 public class TextSearchService implements ITextSearchService {
     
-    private final InvertedIndex invertedIndex;
+    private final TextSearchDatabase db;
     private final SynonymManager synonymManager;
     private final Set<String> suggestions;
     
-    public TextSearchService() {
-        this.invertedIndex = new InvertedIndex();
+    @Autowired
+    public TextSearchService(TextSearchDatabase db) {
+        this.db = db;
         this.synonymManager = new SynonymManager();
         this.suggestions = new HashSet<>();
     }
     
     @Override
     public List<TextSearchResult> searchTracks(String query, int maxResults, boolean fuzzySearch) {
-        if (query == null || query.trim().isEmpty()) {
-            return Collections.emptyList();
-        }
-        
-        List<TextSearchResult> results = new ArrayList<>();
-        
-        if (fuzzySearch) {
-            // Новый вариант: поиск по автомату Левенштейна
-            List<String> trackIds = invertedIndex.fuzzyAutomatonSearch(query, 2, maxResults); // 2 - порог ошибок
-            for (String trackId : trackIds) {
-                TrackMetadata metadata = invertedIndex.getTrackMetadata(trackId);
-                if (metadata != null) {
-                    results.add(new TextSearchResult(
-                        trackId,
-                        metadata.getTitle(),
-                        metadata.getArtist(),
-                        metadata.getAlbum(),
-                        1.0f,
-                        "levenshtein_automaton",
-                        query
-                    ));
-                }
-            }
-        } else {
-            // Точный поиск
-            List<String> trackIds = invertedIndex.search(query, maxResults);
-            
-            for (String trackId : trackIds) {
-                TrackMetadata metadata = invertedIndex.getTrackMetadata(trackId);
-                if (metadata != null) {
-                    float score = calculateRelevanceScore(query, metadata);
-                    results.add(new TextSearchResult(
-                        trackId,
-                        metadata.getTitle(),
-                        metadata.getArtist(),
-                        metadata.getAlbum(),
-                        score,
-                        "exact_match",
-                        query
-                    ));
-                }
-            }
-        }
-        
-        // Сортируем по релевантности
-        results.sort(Collections.reverseOrder());
-        return results;
+        return db.searchTracks(query, maxResults, fuzzySearch);
     }
     
     @Override
     public void registerTrack(TrackMetadata metadata) {
-        if (metadata == null) return;
-        
-        invertedIndex.addTrack(metadata);
+        db.addTrack(metadata);
         
         // Добавляем слова в предложения для автодополнения
         addToSuggestions(metadata.getTitle());
@@ -99,33 +51,17 @@ public class TextSearchService implements ITextSearchService {
     
     @Override
     public void removeTrack(String trackId) {
-        invertedIndex.removeTrack(trackId);
+        db.removeTrack(trackId);
     }
     
     @Override
     public List<String> getSuggestions(String prefix, int maxSuggestions) {
-        if (prefix == null || prefix.trim().isEmpty()) {
-            return Collections.emptyList();
-        }
-        
-        String lowerPrefix = prefix.toLowerCase();
-        
-        return suggestions.stream()
-                .filter(suggestion -> suggestion.toLowerCase().startsWith(lowerPrefix))
-                .sorted()
-                .limit(maxSuggestions)
-                .collect(Collectors.toList());
+        return db.getSuggestions(prefix, maxSuggestions);
     }
     
     @Override
     public void updateTrack(TrackMetadata metadata) {
-        if (metadata == null) return;
-        
-        // Удаляем старые данные
-        removeTrack(metadata.getTrackId());
-        
-        // Добавляем новые данные
-        registerTrack(metadata);
+        db.updateTrack(metadata);
     }
     
     /**
@@ -134,15 +70,9 @@ public class TextSearchService implements ITextSearchService {
      */
     private void addToSuggestions(String text) {
         if (text == null || text.trim().isEmpty()) return;
-        
-        String[] words = text.toLowerCase()
-                .replaceAll("[^a-zA-Zа-яА-Я0-9\\s]", " ")
-                .split("\\s+");
-        
+        String[] words = synonymManager.normalizeText(text.toLowerCase());
         for (String word : words) {
-            if (word.length() >= 3) { // Минимальная длина для предложений
-                suggestions.add(word);
-            }
+            suggestions.add(word);
         }
     }
     
@@ -153,7 +83,8 @@ public class TextSearchService implements ITextSearchService {
      * @return оценка релевантности
      */
     private float calculateRelevanceScore(String query, TrackMetadata metadata) {
-        String normalizedQuery = synonymManager.normalizeText(query.toLowerCase());
+        String[] normalizedQueryArr = synonymManager.normalizeText(query.toLowerCase());
+        String normalizedQuery = String.join(" ", normalizedQueryArr);
         String searchableText = metadata.getSearchableText();
         
         float score = 0.0f;
@@ -194,6 +125,10 @@ public class TextSearchService implements ITextSearchService {
      * @return статистика
      */
     public InvertedIndex.IndexStats getIndexStats() {
-        return invertedIndex.getStats();
+        return db.getStats();
+    }
+
+    public TrackMetadata getTrack(String trackId) {
+        return db.getTrack(trackId);
     }
 } 

@@ -4,7 +4,6 @@ plugins {
     id 'jacoco'
 }
 
-
 group = 'org.example'
 version = '1.0-SNAPSHOT'
 apply plugin: 'io.spring.dependency-management'
@@ -12,6 +11,7 @@ apply plugin: 'io.spring.dependency-management'
 java {
     sourceCompatibility = '17'
 }
+
 repositories {
     mavenCentral()
 }
@@ -19,17 +19,12 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+    implementation 'org.apache.lucene:lucene-analyzers-common:8.11.4'
+    implementation 'org.apache.lucene:lucene-core:8.11.4'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mockito:mockito-core:5.11.0'
-}
-repositories {
-    mavenCentral()
-}
-
-dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
 }
 
 test {
@@ -44,3 +39,10 @@ jacocoTestReport {
         html.required = true
     }
 }
+
+task copySynonymsForTest(type: Copy) {
+    from('src/main/resources/synonyms.txt')
+    into('src/test/resources')
+}
+
+processTestResources.dependsOn copySynonymsForTest

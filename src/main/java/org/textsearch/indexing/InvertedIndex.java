@@ -1,10 +1,17 @@
 package org.textsearch.indexing;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.textsearch.models.TrackMetadata;
 import org.textsearch.utils.SynonymManager;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Инвертированный индекс для ускорения текстового поиска
@@ -60,15 +67,10 @@ public class InvertedIndex {
         if (text == null || text.trim().isEmpty()) return;
         
         // Нормализуем текст
-        String normalizedText = synonymManager.normalizeText(text);
-        
-        // Разбиваем на слова
-        String[] words = normalizedText.toLowerCase()
-                .replaceAll("[^a-zA-Zа-яА-Я0-9\\s]", " ")
-                .split("\\s+");
+        String[] normalizedWords = synonymManager.normalizeText(text);
         
         // Добавляем каждое слово в индекс
-        for (String word : words) {
+        for (String word : normalizedWords) {
             if (word.length() < 2) continue; // Игнорируем слишком короткие слова
             
             wordToTracks.computeIfAbsent(word, k -> new HashSet<>()).add(trackId);
@@ -87,8 +89,7 @@ public class InvertedIndex {
         }
         
         // Нормализуем запрос
-        String normalizedQuery = synonymManager.normalizeText(query);
-        String[] queryWords = normalizedQuery.toLowerCase().split("\\s+");
+        String[] queryWords = synonymManager.normalizeText(query);
         
         // Находим треки для каждого слова
         Map<String, Integer> trackScores = new HashMap<>();
@@ -124,8 +125,7 @@ public class InvertedIndex {
             return Collections.emptyMap();
         }
         
-        String normalizedQuery = synonymManager.normalizeText(query);
-        String[] queryWords = normalizedQuery.toLowerCase().split("\\s+");
+        String[] queryWords = synonymManager.normalizeText(query);
         
         Map<String, Float> trackScores = new HashMap<>();
         
@@ -213,13 +213,22 @@ public class InvertedIndex {
      * @return список ID треков
      */
     public List<String> fuzzyAutomatonSearch(String query, int maxEdits, int maxResults) {
-        org.textsearch.utils.LevenshteinAutomaton automaton = new org.textsearch.utils.LevenshteinAutomaton(query, maxEdits);
-        List<String> resultTrackIds = new ArrayList<>();
-        for (String word : wordToTracks.keySet()) {
-            if (automaton.accept(word)) {
-                resultTrackIds.addAll(wordToTracks.get(word));
-                if (resultTrackIds.size() >= maxResults) break;
+        if (query == null || query.trim().isEmpty()) {
+            return Collections.emptyList();
+        }
+        // Разбиваем запрос на слова
+        String[] queryWords = query.toLowerCase().split("\\s+");
+        Set<String> resultTrackIds = new LinkedHashSet<>();
+        for (String queryWord : queryWords) {
+            if (queryWord.length() < 2) continue;
+            org.textsearch.utils.LevenshteinAutomaton automaton = new org.textsearch.utils.LevenshteinAutomaton(queryWord, maxEdits);
+            for (String word : wordToTracks.keySet()) {
+                if (automaton.accept(word)) {
+                    resultTrackIds.addAll(wordToTracks.get(word));
+                    if (resultTrackIds.size() >= maxResults) break;
+                }
             }
+            if (resultTrackIds.size() >= maxResults) break;
         }
         return resultTrackIds.stream().limit(maxResults).collect(Collectors.toList());
     }
@@ -247,5 +256,9 @@ public class InvertedIndex {
             return String.format("IndexStats{tracks=%d, words=%d, entries=%d}",
                     trackCount, uniqueWords, totalIndexEntries);
         }
+    }
+    
+    public Set<String> getWords() {
+        return Collections.unmodifiableSet(wordToTracks.keySet());
     }
 } 
