@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.*;
 
+@SuppressWarnings("unchecked")
 public class FingerprintGenerator {
     private static final int WINDOW_SIZE = 4096;
     private static final int OVERLAP = 2048;
@@ -17,7 +18,7 @@ public class FingerprintGenerator {
     private static final double MIN_MAGNITUDE_THRESHOLD = 0.02;
     private static final int FREQ_BINS = 30;
     private static final double MIN_FREQ = 20;
-    private static final double MAX_FREQ = 5000.0;
+    private static final double MAX_FREQ = 11000.0;
     private static final double SILENCE_THRESHOLD = 0.02;
     private static final double TARGET_RMS = 0.15;
 
@@ -105,7 +106,7 @@ public class FingerprintGenerator {
         for (int i = 0; i < window.length; i++) {
             fftInput[i] = new FFT.Complex(window[i], 0);
         }
-        return FFT.fft(fftInput);
+        return FFT.fftWithPadding(fftInput);
     }
 
     private static List<Peak> findSignificantPeaks(FFT.Complex[] spectrum, int windowOffset) {
@@ -173,5 +174,19 @@ public class FingerprintGenerator {
         for (int i = 0; i < window.length; i++) {
             window[i] *= hannWindow[i];
         }
+    }
+
+    public static List<Peak> extractPeaks(double[] audioData) {
+        double[] hannWindow = precomputeHannWindow(WINDOW_SIZE);
+        List<Peak> allPeaks = new ArrayList<>();
+        for (int i = 0; i < (audioData.length + OVERLAP - 1) / OVERLAP; i++) {
+            int start = i * OVERLAP;
+            int end = Math.min(start + WINDOW_SIZE, audioData.length);
+            double[] window = Arrays.copyOfRange(audioData, start, end);
+            applyWindow(window, hannWindow);
+            FFT.Complex[] fftOutput = computeFFT(window);
+            allPeaks.addAll(findSignificantPeaks(fftOutput, start));
+        }
+        return allPeaks;
     }
 }

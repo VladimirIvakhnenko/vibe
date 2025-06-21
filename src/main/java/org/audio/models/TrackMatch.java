@@ -60,6 +60,7 @@ public class TrackMatch implements Comparable<TrackMatch> {
     public static TrackMatch create(String trackId, String trackTitle,
                                     int matches, int totalHashes, long offset) {
         float confidence = totalHashes > 0 ? (float) matches / totalHashes : 0;
+        confidence = Math.max(0, Math.min(1, confidence));
         return new TrackMatch(trackId, trackTitle, matches, confidence, offset);
     }
 
