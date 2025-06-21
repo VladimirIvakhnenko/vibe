@@ -81,13 +81,28 @@ public class InMemoryFingerprintDatabase extends FingerprintDatabase {
         Map<String, TrackMatchInfo> matchInfoMap = new HashMap<>();
         findAndProcessMatchesForBestMatches(queryHashes, matchInfoMap);
 
-        return matchInfoMap.values().stream()
-                .filter(info -> {
-                    float confidence = (float) info.matchCount / queryHashes.size();
-                    return confidence >= minConfidence;
-                })
+        if (matchInfoMap.isEmpty()) {
+            return new TrackMatch[0];
+        }
+
+        PriorityQueue<TrackMatchInfo> topMatches = new PriorityQueue<>(
+                Comparator.comparingInt(info -> info.matchCount)
+        );
+
+        for (TrackMatchInfo info : matchInfoMap.values()) {
+            float confidence = (float) info.matchCount / queryHashes.size();
+            if (confidence >= minConfidence) {
+                if (topMatches.size() < limit) {
+                    topMatches.add(info);
+                } else if (info.matchCount > Objects.requireNonNull(topMatches.peek()).matchCount) {
+                    topMatches.poll();
+                    topMatches.add(info);
+                }
+            }
+        }
+
+        return topMatches.stream()
                 .sorted(Comparator.comparingInt((TrackMatchInfo info) -> info.matchCount).reversed())
-                .limit(limit)
                 .map(info -> {
                     final String trackId = info.trackId;
                     final int matchCount = info.matchCount;
