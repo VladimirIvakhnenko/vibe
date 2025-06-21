@@ -3,6 +3,8 @@ package org.audio.configs;
 import jakarta.servlet.MultipartConfigElement;
 import org.audio.db.FingerprintDatabase;
 import org.audio.db.InMemoryFingerprintDatabase;
+import org.audio.db.repo.FingerprintRepository;
+import org.audio.db.repo.SongRepository;
 import org.audio.services.AudioMatchingService;
 import org.audio.services.FingerprintService;
 import org.audio.services.FingerprintServiceBase;
@@ -16,8 +18,8 @@ import org.springframework.util.unit.DataSize;
 public class AudioConfig {
 
     @Bean
-    public FingerprintDatabase fingerprintDatabase() {
-        return new InMemoryFingerprintDatabase();
+    public FingerprintDatabase fingerprintDatabase(SongRepository songRepository, FingerprintRepository fingerprintRepository) {
+        return new InMemoryFingerprintDatabase(songRepository, fingerprintRepository);
     }
 
     @Bean
