@@ -18,7 +18,7 @@ public class FingerprintGenerator {
     private static final double MIN_MAGNITUDE_THRESHOLD = 0.02;
     private static final int FREQ_BINS = 30;
     private static final double MIN_FREQ = 20;
-    private static final double MAX_FREQ = 5000.0;
+    private static final double MAX_FREQ = 11000.0;
     private static final double SILENCE_THRESHOLD = 0.02;
     private static final double TARGET_RMS = 0.15;
 
