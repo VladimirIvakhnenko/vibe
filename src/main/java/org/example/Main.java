@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @SpringBootApplication
-@ComponentScan(basePackages = {"org.example", "org.audio", "org.textsearch"})
+@ComponentScan(basePackages = {"org.example", "org.audio", "org.textsearch", "org.playlists"})
 public class Main {
 
     @RequestMapping("/")
