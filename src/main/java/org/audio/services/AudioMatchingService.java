@@ -3,12 +3,11 @@ package org.audio.services;
 import org.audio.db.FingerprintDatabase;
 import org.audio.models.AudioProcessingResult;
 import org.audio.models.TrackMatch;
-import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-@Service
 public class AudioMatchingService implements  IAudioMatchingService {
     private static final int SAMPLE_RATE = 44100; // 44.1 kHz
     private static final int BYTES_PER_SAMPLE = 2; // 16-bit samples
@@ -22,6 +21,10 @@ public class AudioMatchingService implements  IAudioMatchingService {
         this.fingerprintService = fingerprintService;
     }
 
+    /**
+     * Идентифицирует трек по аудиоданным.
+     */
+    @Override
     public AudioProcessingResult identifyTrack(byte[] audioData) {
         if (audioData == null || audioData.length == 0) {
             return AudioProcessingResult.error("Audio data is empty");
@@ -45,6 +48,10 @@ public class AudioMatchingService implements  IAudioMatchingService {
         }
     }
 
+    /**
+     * Находит лучшие совпадения по аудиоданным.
+     */
+    @Override
     public AudioProcessingResult findBestMatches(byte[] audioData, int maxResults, float minConfidence) {
         if (audioData == null || audioData.length == 0) {
             return AudioProcessingResult.error("Audio data is empty");
@@ -64,6 +71,10 @@ public class AudioMatchingService implements  IAudioMatchingService {
         }
     }
 
+    /**
+     * Регистрирует новый трек в базе по аудиоданным.
+     */
+    @Override
     public void registerTrack(String trackId, String title, byte[] audioData) {
         if (trackId == null || title == null || audioData == null) {
             throw new IllegalArgumentException("Parameters cannot be null");

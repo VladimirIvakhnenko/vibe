@@ -1,0 +1,670 @@
+# Примеры синонимов для музыкального поиска
+beatles, the beatles, beattles, beetles
+metallica, metalica
+led zeppelin, ledzep, zeppelin
+pink floyd, floyd
+rolling stones, the rolling stones, stones
+queen, qeen
+nirvana, nervana
+radiohead, radio head
+acdc, ac/dc, a c d c
+u2, u-2
+red hot chili peppers, rhcp, red hot chilli peppers
+linkin park, lincoln park, lp
+eminem, slim shady, marshal mathers
+beyonce, beyoncé
+jay z, jay-z, jayz
+kanye west, ye
+pop, pop music, popular
+rock, rock music
+jazz, jazz music
+classical, classical music
+hip hop, hip-hop, rap
+r&b, rnb
+edm, electronic, electronic music
+dance, dance music
+house, house music
+trance, trance music
+avicii, tim bergling, avicci, avicii
+arctic monkeys, arcticmonkeys
+coldplay, cold play
+imagine dragons, imaginedragons
+maroon 5, maroon5
+one republic, onerepublic
+the script, script
+the chainsmokers, chainsmokers
+twenty one pilots, 21 pilots, twentyonepilots
+the 1975, 1975
+the strokes, strokes
+the cure, cure
+the smiths, smiths
+oasis, oasys
+blur, blurr
+foo fighters, foofighters
+green day, greenday
+blink 182, blink182, blink-182
+sum 41, sum41
+good charlotte, goodcharlotte
+simple plan, simpleplan
+paramore, paramor
+my chemical romance, mcr
+fall out boy, fallout boy, fob
+panic at the disco, panic! at the disco
+all time low, alltimelow
+pierce the veil, ptv
+sleeping with sirens, sws
+bring me the horizon, bmth
+asking alexandria, aa
+black veil brides, bvb
+motionless in white, miw
+of mice & men, omam
+memphis may fire, mmf
+we came as romans, wcars
+crown the empire, cte
+issues, isues
+wage war, wagewar
+beartooth, beartoothh
+fit for a king, ffak
+northlane, north lane
+architects, architechts
+parkway drive, parkwaydrive
+while she sleeps, wss
+boston manor, bostonmanor
+neck deep, neckdeep
+state champs, statechamps
+real friends, realfriends
+knuckle puck, knucklepuck
+seaway, sea way
+the story so far, tssf
+man overboard, manoverboard
+four year strong, fys
+new found glory, nfg
+yellowcard, yellow card
+mayday parade, maydayparade
+all american rejects, aar
+boys like girls, blg
+cartel, cartell
+the maine, maine
+the summer set, summerset
+we the kings, wethekings
+this century, thiscentury
+forever the sickest kids, ftsk
+cobra starship, cobrastarship
+metro station, metrostation
+3oh!3, 3oh3
+hellogoodbye, hello goodbye
+owl city, owlcity
+passion pit, passionpit
+foster the people, fosterthepeople
+walk the moon, walkthemoon
+young the giant, youngthegiant
+x ambassadors, xambassadors
+american authors, americanauthors
+bastille, bastile
+imagine dragons, imaginedragons
+one direction, 1d
+little mix, littlemix
+fifth harmony, 5h
+big time rush, btr
+jonas brothers, jonasbros
+selena gomez, selenagomez
+demi lovato, demilovato
+ariana grande, arianagrande
+justin bieber, justinbieber
+shawn mendes, shawnmendes
+camila cabello, camilacabello
+halsey, halseyy
+dua lipa, dualipa
+billie eilish, billieeilish
+lorde, lordee
+taylor swift, taylorswift, t swizzle
+katy perry, katyperry
+lady gaga, ladygaga
+gwen stefani, gwenstefani
+madonna, madona
+britney spears, britneyspears
+christina aguilera, xtina
+rihanna, riri
+nicki minaj, nickiminaj
+cardi b, cardib
+megan thee stallion, meganthestallion
+lil nas x, lilnasx
+post malone, postmalone
+travis scott, travisscott
+future, futuree
+drake, drizzy
+kendrick lamar, kendricklamar
+j cole, jcole
+logic, logicc
+mac miller, macmiller
+childish gambino, donald glover
+chance the rapper, chancetherapper
+tyler the creator, tylerthecreator
+brockhampton, brock hampton
+frank ocean, frankocean
+the weeknd, weeknd, abel tesfaye
+miguel, migguel
+usher, usheer
+chris brown, chrisbrown
+ne-yo, neyo
+jason derulo, jasonderulo
+trey songz, treysongz
+omarion, omarionn
+alicia keys, aliciakeys
+john legend, johnlegend
+sam smith, samsmith
+ed sheeran, edsheeran
+lewis capaldi, lewiscapaldi
+james arthur, jamesarthur
+george ezra, georgeezra
+vance joy, vancejoy
+hozier, hozierr
+ben howard, benhoward
+mumford & sons, mumford and sons, mumford sons
+of monsters and men, omam
+the lumineers, lumineers
+the head and the heart, head and the heart
+the avett brothers, avett brothers
+the decemberists, decemberists
+fleet foxes, fleetfoxes
+bon iver, boniver
+sufjan stevens, sufjanstevens
+iron & wine, iron and wine, ironwine
+city and colour, city & colour
+gregory alan isakov, gregoryalanisakov
+joshua radin, joshuaradin
+jack johnson, jackjohnson
+jason mraz, jasonmraz
+john mayer, johnmayer
+norah jones, norahjones
+corinne bailey rae, corinnebaileyrae
+adele, adelle
+sam smith, samsmith
+sia, siaa
+labrinth, labrinthh
+paloma faith, palomafaith
+ellie goulding, elliegoulding
+florence and the machine, florence + the machine, florence machine
+lana del rey, lanadelrey
+marina and the diamonds, marina & the diamonds, marina diamandis
+foxes, foxess
+zara larsson, zaralarsson
+mø, mo
+alessia cara, alessiacara
+tove lo, tovelo
+abba, abba band
+bee gees, beegees, bgs
+pet shop boys, petshopboys
+kraftwerk, kraft werk
+new order, neworder
+joy division, joydivision
+simple minds, simpleminds
+tears for fears, tears4fears
+duran duran, duranduran
+spandau ballet, spandauballet
+a-ha, aha
+roxette, roxet
+ace of base, aceofbase
+modern talking, moderntalking
+scorpions, scorpian
+rammstein, ramstein
+kraftklub, kraft club
+tokio hotel, tokiohotel
+scooter, skuter
+snap!, snap
+culture beat, culturebeat
+2 unlimited, twounlimited
+la bouche, labouche
+mr. president, mr president
+vengaboys, venga boys
+aqua, aquaa
+whigfield, wigfield
+rednex, red nex
+haddaway, hadaway
+real mccoy, realmccoy
+cappella, capella
+corona, korona
+ice mc, icemc
+mo-do, modo
+dr. alban, dr alban
+2 brothers on the 4th floor, 2brothers, two brothers
+masterboy, master boy
+pharao, farao
+fun factory, funfactory
+sash!, sash
+dj bobo, djbobo
+gigi d'agostino, gigi dagostino
+eiffel 65, eiffel65
+italobrothers, italo brothers
+basshunter, bass hunter
+cascada, kaskada
+alex c, alexc
+groove coverage, groovecoverage
+jan wayne, janwayne
+special d, speciald
+manian, maniyan
+r.i.o., rio
+infernal, infernall
+benassi bros, benassibros
+benny benassi, bennybenassi
+bob sinclar, bob sinclaire
+david guetta, davidguetta
+martin garrix, martingarrix
+calvin harris, calvinharris
+avicii, aviciii
+kygo, kygoo
+alan walker, alanwalker
+zedd, zed
+alesso, alesso
+axwell, axwel
+sebastian ingrosso, sebastianingrosso
+swedish house mafia, shm
+steve angello, steveangello
+dimitri vegas & like mike, dimitri vegas, like mike
+don diablo, dondiablo
+armin van buuren, arminvanbuuren
+paul van dyk, paulvandyk
+tiesto, dj tiesto
+deadmau5, dead mouse
+skrillex, skrilex
+marshmello, marshmallow
+porter robinson, porterrobinson
+madeon, madeonn
+zhu, zhuu
+flume, flumee
+rl grime, rlgrime
+baauer, bauer
+major lazer, majorlazer
+diplo, dipplo
+yellow claw, yellowclaw
+troyboi, troy boy
+nghtmre, nightmare
+illenium, illenium
+seven lions, 7 lions
+krewella, crewella
+pegboard nerds, pegboardnerds
+knife party, knifeparty
+zeds dead, zedsdead
+rezz, rezzz
+black tiger sex machine, btsm
+slushii, slushi
+virtual riot, virtualriot
+tritonal, tritonall
+cash cash, cashcash
+galantis, galantiss
+sigala, sigalaa
+lost frequencies, lostfrequencies
+robin schulz, robinschulz
+felix jaehn, felixjaehn
+kyan, kyan
+matoma, matomaa
+sam feldt, samfeldt
+bakermat, bakermatt
+nora en pure, noraenpure
+claptone, claptonee
+purple disco machine, purplediscomachine
+meduza, meduzza
+regard, regaard
+saint jhn, saintjohn
+surf mesa, surfmesa
+topic, topik
+vize, vizee
+twocolors, two colors
+ava max, avamax
+bebe rexha, beberexha
+anne-marie, annemarie
+mabel, mabell
+rita ora, ritaora
+zara larsson, zaralarsson
+sigrid, sigridd
+dagny, dagnii
+astrid s, astrids
+alina baraz, alinabaraz
+banks, bankss
+fka twigs, fkatwigs
+jessie ware, jessieware
+roisin murphy, roisinmurphy
+sophie ellis-bextor, sophie ellisbextor
+kylie minogue, kylieminogue
+cher, sherr
+celine dion, celinedion
+whitney houston, whitneyhouston
+mariah carey, mariahcarey
+janet jackson, janetjackson
+paula abdul, paulaabdul
+tina turner, tinaturner
+shania twain, shaniatwain
+faith hill, faithhill
+leann rimes, leannrimes
+martina mcbride, martinamcbride
+reba mcentire, rebamcentire
+trisha yearwood, trishayearwood
+sara evans, saraevans
+miranda lambert, mirandalambert
+carrie underwood, carrieunderwood
+kelly clarkson, kellyclarkson
+jordin sparks, jordinsparks
+ashanti, ashantii
+ciara, ciaraa
+brandy, brandyy
+monica, monikaa
+mya, myaa
+tamia, tamiaa
+amerie, ameriee
+keyshia cole, keyshiacole
+k michelle, kmichelle
+tamar braxton, tamarbraxton
+sevyn streeter, sevynstreeter
+tinashe, tinashee
+kiana lede, kianalede
+queen naija, queennajia
+ella mai, ellamai
+summer walker, summerwalker
+sza, szza
+h.e.r., her
+kehlani, kehlanii
+doja cat, dojacat
+saweetie, saweeti
+mulatto, mulato
+city girls, citygirls
+megan thee stallion, meganthestallion
+latto, lattoo
+flo milli, flomilli
+rico nasty, riconasty
+cupcakke, cupcakkee
+kali uchis, kaliuchis
+rosalia, rosalía
+karol g, karolg
+becky g, beckyg
+natti natasha, nattinatasha
+anitta, anita
+luisa sonza, luisasonza
+ivete sangalo, ivetesangalo
+clara luciani, claraluciani
+angèle, angele
+christine and the queens, christineandthequeens
+juliette armanet, juliettearmanet
+vianney, vianneyy
+benjamin biolay, benjaminbiolay
+calogero, calogerro
+kendji girac, kendjigirac
+soprano, sopranno
+m pokora, mpokora
+vitaa, vitaaa
+slimane, slimanee
+amel bent, amelbent
+lartiste, lartistee
+ninho, ninhoo
+booba, boobaa
+koba lad, kobalad
+gazo, gazoo
+sch, schh
+jul, jull
+pnl, p n l
+nekfeu, nekfeuu
+vald, valdd
+damso, damsoo
+hamza, hamzaa
+lomepal, lomepall
+orelsan, orel san
+roméo elvis, romeoelvis
+strome, stromae
+anuel aa, anuel
+bad bunny, badbunny
+j balvin, jbalvin
+maluma, malumaa
+ozuna, ozunaa
+karol g, karolg
+natti natasha, nattinatasha
+becky g, beckyg
+sech, sechh
+myke towers, myketowers
+rauw alejandro, rauwalejandro
+camilo, camiloo
+manuel turizo, manuelturizo
+farruko, farrukoo
+zion & lennox, zion y lennox, zion lennox
+wisin & yandel, wisin y yandel, wisin yandel
+plan b, planb
+arcangel, arcangel
+de la ghetto, delaghetto
+chencho corleone, chenchocorleone
+jowell & randy, jowell y randy, jowell randy
+alexis & fido, alexis y fido, alexis fido
+cazzu, cazzuu
+nicki nicole, nickinicole
+duki, dukii
+khea, kheaa
+pablo londra, pablolondra
+trueno, truenoo
+wos, woss
+bizarrap, bizarap
+l-gante, lgante
+maría becerra, mariabecerra
+emilia, emiliaa
+rusherking, rusherkingg
+thiago pzk, thiagopzk
+lit killah, litkillah
+tame impala, tameimpala
+daft punk, daftpunk
+gorillaz, gorillazz
+the prodigy, prodigy
+the chemical brothers, chemical brothers, chem bros
+underworld, under world
+fatboy slim, fat boy slim
+basement jaxx, basementjaxx
+faithless, faith less
+leftfield, left field
+orbital, orbitall
+the avalanches, avalanches
+hot chip, hotchip
+lcd soundsystem, lcdsoundsystem
+justice, justise
+m83, m 83
+chromeo, chrome o
+soulwax, soul wax
+simian mobile disco, simianmobiledisco
+ratatat, rat a tat
+mgmt, management
+empire of the sun, empireofthesun
+cut copy, cutcopy
+friendly fires, friendlyfires
+metronomy, metronomyy
+digitalism, digitalizm
+cassius, cassius band
+sebastiAn, sebastian dj
+boys noize, boysnoize
+booka shade, bookashade
+trentemøller, trentemoller
+moderat, moderatt
+modeselektor, modeselector
+apparat, apparatt
+kraftwerk, kraft werk
+air, air band
+phoenix, phoenix band
+st. germain, st germain
+robin, robin schulz
+paul kalkbrenner, paulkalkbrenner
+paul oakenfold, pauloakenfold
+sasha, sashaa
+digweed, digweed dj
+john digweed, johndigweed
+richie hawtin, richiehawtin
+carl cox, carlcox
+adam beyer, adambeyer
+jeff mills, jeffmills
+laurent garnier, laurentgarnier
+sven väth, sven vath
+solomun, solomunn
+black coffee, blackcoffee
+claptone, claptone dj
+fisher, fisher dj
+meduza, meduzza
+duke dumont, dukedumont
+purple disco machine, purplediscomachine
+shouse, shousee
+sofie tukker, sofitukker
+bob moses, bobmoses
+rufus du sol, rufusdusol
+flight facilities, flightfacilities
+odesza, odesza
+porter robinson, porterrobinson
+madeon, madeonn
+zhu, zhuu
+flume, flumee
+rl grime, rlgrime
+baauer, bauer
+galantis, galantiss
+sigala, sigalaa
+lost frequencies, lostfrequencies
+robin schulz, robinschulz
+felix jaehn, felixjaehn
+kyan, kyan
+matoma, matomaa
+sam feldt, samfeldt
+bakermat, bakermatt
+nora en pure, noraenpure
+claptone, claptonee
+purple disco machine, purplediscomachine
+meduza, meduzza
+regard, regaard
+saint jhn, saintjohn
+surf mesa, surfmesa
+topic, topik
+vize, vizee
+twocolors, two colors
+ava max, avamax
+bebe rexha, beberexha
+anne-marie, annemarie
+mabel, mabell
+rita ora, ritaora
+zara larsson, zaralarsson
+sigrid, sigridd
+dagny, dagnii
+astrid s, astrids
+alina baraz, alinabaraz
+banks, bankss
+fka twigs, fkatwigs
+jessie ware, jessieware
+roisin murphy, roisinmurphy
+sophie ellis-bextor, sophie ellisbextor
+kylie minogue, kylieminogue
+cher, sherr
+celine dion, celinedion
+whitney houston, whitneyhouston
+mariah carey, mariahcarey
+janet jackson, janetjackson
+paula abdul, paulaabdul
+tina turner, tinaturner
+shania twain, shaniatwain
+faith hill, faithhill
+leann rimes, leannrimes
+martina mcbride, martinamcbride
+reba mcentire, rebamcentire
+trisha yearwood, trishayearwood
+sara evans, saraevans
+miranda lambert, mirandalambert
+carrie underwood, carrieunderwood
+kelly clarkson, kellyclarkson
+jordin sparks, jordinsparks
+ashanti, ashantii
+ciara, ciaraa
+brandy, brandyy
+monica, monikaa
+mya, myaa
+tamia, tamiaa
+amerie, ameriee
+keyshia cole, keyshiacole
+k michelle, kmichelle
+tamar braxton, tamarbraxton
+sevyn streeter, sevynstreeter
+tinashe, tinashee
+kiana lede, kianalede
+queen naija, queennajia
+ella mai, ellamai
+summer walker, summerwalker
+sza, szza
+h.e.r., her
+kehlani, kehlanii
+doja cat, dojacat
+saweetie, saweeti
+mulatto, mulato
+city girls, citygirls
+megan thee stallion, meganthestallion
+latto, lattoo
+flo milli, flomilli
+rico nasty, riconasty
+cupcakke, cupcakkee
+kali uchis, kaliuchis
+rosalia, rosalía
+karol g, karolg
+becky g, beckyg
+natti natasha, nattinatasha
+anitta, anita
+luisa sonza, luisasonza
+ivete sangalo, ivetesangalo
+clara luciani, claraluciani
+angèle, angele
+christine and the queens, christineandthequeens
+juliette armanet, juliettearmanet
+vianney, vianneyy
+benjamin biolay, benjaminbiolay
+calogero, calogerro
+kendji girac, kendjigirac
+soprano, sopranno
+m pokora, mpokora
+vitaa, vitaaa
+slimane, slimanee
+amel bent, amelbent
+lartiste, lartistee
+ninho, ninhoo
+booba, boobaa
+koba lad, kobalad
+gazo, gazoo
+sch, schh
+jul, jull
+pnl, p n l
+nekfeu, nekfeuu
+vald, valdd
+damso, damsoo
+hamza, hamzaa
+lomepal, lomepall
+orelsan, orel san
+roméo elvis, romeoelvis
+strome, stromae
+anuel aa, anuel
+bad bunny, badbunny
+j balvin, jbalvin
+maluma, malumaa
+ozuna, ozunaa
+karol g, karolg
+natti natasha, nattinatasha
+becky g, beckyg
+sech, sechh
+myke towers, myketowers
+rauw alejandro, rauwalejandro
+camilo, camiloo
+manuel turizo, manuelturizo
+farruko, farrukoo
+zion & lennox, zion y lennox, zion lennox
+wisin & yandel, wisin y yandel, wisin yandel
+plan b, planb
+arcangel, arcangel
+de la ghetto, delaghetto
+chencho corleone, chenchocorleone
+jowell & randy, jowell y randy, jowell randy
+alexis & fido, alexis y fido, alexis fido
+cazzu, cazzuu
+nicki nicole, nickinicole
+duki, dukii
+khea, kheaa
+pablo londra, pablolondra
+trueno, truenoo
+wos, woss
+bizarrap, bizarap
+l-gante, lgante
+maría becerra, mariabecerra
+emilia, emiliaa
+rusherking, rusherkingg
+thiago pzk, thiagopzk
+lit killah, litkillah 
