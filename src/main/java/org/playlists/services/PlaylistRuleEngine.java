@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class PlaylistRuleEngine {
     private final UserPreferenceService userPreferenceService;
@@ -16,7 +18,10 @@ public class PlaylistRuleEngine {
     }
 
     public List<Track> processRules(String userId, List<PlaylistRule> rules) {
+        log.info("Processing rules for user: {}, rules: {}", userId, rules);
+        
         if (rules == null || rules.isEmpty()) {
+            log.warn("No rules provided");
             return Collections.emptyList();
         }
 
@@ -25,21 +30,24 @@ public class PlaylistRuleEngine {
         for (PlaylistRule rule : rules) {
             if ("likes".equalsIgnoreCase(rule.getSource())) {
                 List<Track> likedTracks = userPreferenceService.getLikedTracks(userId);
+                log.debug("Found {} liked tracks for user {}", likedTracks.size(), userId);
                 
                 if (rule.getGenre() != null) {
-                    // Filter by genre if specified
                     likedTracks = likedTracks.stream()
                             .filter(t -> rule.getGenre().equalsIgnoreCase(t.getGenre()))
                             .collect(Collectors.toList());
+                    log.debug("After genre filter: {} tracks", likedTracks.size());
                 }
                 
                 resultTracks.addAll(selectRandomTracks(likedTracks, rule.getWeight()));
             } else if (rule.getGenre() != null) {
                 List<Track> genreTracks = userPreferenceService.getTracksByGenre(rule.getGenre());
+                log.debug("Found {} tracks for genre {}", genreTracks.size(), rule.getGenre());
                 resultTracks.addAll(selectRandomTracks(genreTracks, rule.getWeight()));
             }
         }
         
+        log.info("Generated {} tracks", resultTracks.size());
         return resultTracks;
     }
 
