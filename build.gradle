@@ -19,6 +19,8 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+    implementation 'org.apache.lucene:lucene-analyzers-common:8.11.4'
+    implementation 'org.apache.lucene:lucene-core:8.11.4'
     implementation 'org.apache.commons:commons-math3:3.6.1'
     implementation 'org.jgrapht:jgrapht-core:1.5.1'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -45,3 +47,10 @@ jacocoTestReport {
         html.required = true
     }
 }
+
+task copySynonymsForTest(type: Copy) {
+    from('src/main/resources/synonyms.txt')
+    into('src/test/resources')
+}
+
+processTestResources.dependsOn copySynonymsForTest
