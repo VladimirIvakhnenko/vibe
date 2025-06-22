@@ -4,14 +4,10 @@ import org.playlists.dto.GeneratePlaylistRequest;
 import org.playlists.dto.GeneratePlaylistResponse;
 import org.playlists.models.Playlist;
 import org.playlists.models.Track;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class PlaylistGeneratorService {
@@ -27,7 +23,6 @@ public class PlaylistGeneratorService {
         this.trackGraphWalker = trackGraphWalker;
     }
 
-    @Cacheable(value = "userTopLikes", key = "#request.userId")
     public GeneratePlaylistResponse generatePlaylist(GeneratePlaylistRequest request) {
         try {
             List<Track> seedTracks = ruleEngine.processRules(
@@ -45,7 +40,7 @@ public class PlaylistGeneratorService {
 
             List<Track> playlistTracks = trackGraphWalker.generatePlaylist(
                     seedTracks, 
-                    20 // target playlist size
+                    Math.min(20, seedTracks.size())
             );
 
             Playlist playlist = new Playlist(
