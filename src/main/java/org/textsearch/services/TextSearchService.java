@@ -20,13 +20,13 @@ public class TextSearchService implements ITextSearchService {
     
     private final TextSearchDatabase db;
     private final SynonymManager synonymManager;
-    private final Set<String> suggestions;
+    private final Set<String> suggestions = new HashSet<>();
+    private final Set<String> trackTitles = new HashSet<>();
     
     @Autowired
     public TextSearchService(TextSearchDatabase db) {
         this.db = db;
         this.synonymManager = new SynonymManager();
-        this.suggestions = new HashSet<>();
     }
     
     @Override
@@ -47,6 +47,10 @@ public class TextSearchService implements ITextSearchService {
         for (String genre : metadata.getGenres()) {
             addToSuggestions(genre);
         }
+        // Добавляем полное название трека для фразовых подсказок
+        if (metadata.getTitle() != null && !metadata.getTitle().isBlank()) {
+            trackTitles.add(metadata.getTitle().toLowerCase());
+        }
     }
     
     @Override
@@ -56,7 +60,18 @@ public class TextSearchService implements ITextSearchService {
     
     @Override
     public List<String> getSuggestions(String prefix, int maxSuggestions) {
-        return db.getSuggestions(prefix, maxSuggestions);
+        Set<String> suggestions = new HashSet<>();
+        // Слова из индекса (старое поведение)
+        suggestions.addAll(db.getSuggestions(prefix, maxSuggestions));
+        // Фразовые подсказки по полному названию трека
+        String lowerPrefix = prefix.toLowerCase();
+        for (String title : trackTitles) {
+            if (title.startsWith(lowerPrefix)) {
+                suggestions.add(title);
+                if (suggestions.size() >= maxSuggestions) break;
+            }
+        }
+        return new java.util.ArrayList<>(suggestions).subList(0, Math.min(suggestions.size(), maxSuggestions));
     }
     
     @Override
