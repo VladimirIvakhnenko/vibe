@@ -1,25 +1,34 @@
 package org.audio.db;
 
+import org.audio.db.repo.FingerprintRepository;
+import org.audio.db.repo.SongRepository;
 import org.audio.models.TrackMatch;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
-
+@Service
 public class InMemoryFingerprintDatabase extends FingerprintDatabase {
-    private final Map<Long, List<SongMatch>> hashMap = new ConcurrentHashMap<>();
-    private final Map<String, SongData> songs = new ConcurrentHashMap<>();
+
+    private final SongRepository songRepository;
+    private final FingerprintRepository fingerprintRepository;
+
     private static final int MIN_MATCHES = 5;
+    private static final int HAMMING_DISTANCE_THRESHOLD = 1;
+
+    public InMemoryFingerprintDatabase(SongRepository songRepository, FingerprintRepository fingerprintRepository) {
+        this.songRepository = songRepository;
+        this.fingerprintRepository = fingerprintRepository;
+    }
 
     @Override
     public void addTrack(String trackId, String trackName, List<Long> fingerprints) {
         SongData songData = new SongData(trackId, trackName);
-        songs.put(trackId, songData);
+        songRepository.save(songData);
 
         for (int offset = 0; offset < fingerprints.size(); offset++) {
             long hash = fingerprints.get(offset);
-            hashMap.computeIfAbsent(hash, k -> new ArrayList<>())
-                    .add(new SongMatch(trackId, offset));
+            fingerprintRepository.save(hash, new SongMatch(trackId, offset));
         }
     }
 
@@ -30,30 +39,18 @@ public class InMemoryFingerprintDatabase extends FingerprintDatabase {
         }
 
         Map<String, Map<Integer, Integer>> candidateMatches = new HashMap<>();
-
-        for (int queryOffset = 0; queryOffset < queryHashes.size(); queryOffset++) {
-            long hash = queryHashes.get(queryOffset);
-            List<SongMatch> matches = hashMap.get(hash);
-
-            if (matches != null) {
-                for (SongMatch match : matches) {
-                    int delta = match.offset - queryOffset;
-                    candidateMatches
-                            .computeIfAbsent(match.songId, k -> new HashMap<>())
-                            .merge(delta, 1, Integer::sum);
-                }
-            }
-        }
+        findAndProcessMatchesForBestMatch(queryHashes, candidateMatches, HAMMING_DISTANCE_THRESHOLD);
 
         String bestTrackId = null;
         int bestMatches = 0;
         int bestDelta = 0;
 
         for (Map.Entry<String, Map<Integer, Integer>> entry : candidateMatches.entrySet()) {
+            String currentTrackId = entry.getKey();
             for (Map.Entry<Integer, Integer> deltaEntry : entry.getValue().entrySet()) {
                 if (deltaEntry.getValue() > bestMatches && deltaEntry.getValue() >= MIN_MATCHES) {
                     bestMatches = deltaEntry.getValue();
-                    bestTrackId = entry.getKey();
+                    bestTrackId = currentTrackId;
                     bestDelta = deltaEntry.getKey();
                 }
             }
@@ -63,16 +60,16 @@ public class InMemoryFingerprintDatabase extends FingerprintDatabase {
             return Optional.empty();
         }
 
-        SongData songData = songs.get(bestTrackId);
-        float confidence = (float) bestMatches / queryHashes.size();
-
-        return Optional.of(TrackMatch.create(
-                bestTrackId,
-                songData.name,
-                bestMatches,
-                queryHashes.size(),
-                bestDelta * 1000L / 44100 // Convert to milliseconds
-        ));
+        final int finalBestMatches = bestMatches;
+        final int finalBestDelta = bestDelta;
+        return songRepository.findById(bestTrackId)
+                .map(songData -> TrackMatch.create(
+                        songData.id,
+                        songData.name,
+                        finalBestMatches,
+                        queryHashes.size(),
+                        finalBestDelta * 1000L / 44100
+                ));
     }
 
     @Override
@@ -82,64 +79,110 @@ public class InMemoryFingerprintDatabase extends FingerprintDatabase {
         }
 
         Map<String, TrackMatchInfo> matchInfoMap = new HashMap<>();
+        findAndProcessMatchesForBestMatches(queryHashes, matchInfoMap);
 
-        for (int queryOffset = 0; queryOffset < queryHashes.size(); queryOffset++) {
-            long hash = queryHashes.get(queryOffset);
-            List<SongMatch> matches = hashMap.get(hash);
+        if (matchInfoMap.isEmpty()) {
+            return new TrackMatch[0];
+        }
 
-            if (matches != null) {
-                for (SongMatch match : matches) {
-                    int delta = match.offset - queryOffset;
-                    TrackMatchInfo info = matchInfoMap.computeIfAbsent(match.songId,
-                            k -> new TrackMatchInfo(match.songId));
+        PriorityQueue<TrackMatchInfo> topMatches = new PriorityQueue<>(
+                Comparator.comparingInt(info -> info.matchCount)
+        );
 
-                    info.matchCount++;
-                    // Keep the most common delta
-                    info.deltaCounts.merge(delta, 1, Integer::sum);
-                    if (info.deltaCounts.get(delta) > info.deltaCounts.getOrDefault(info.bestDelta, 0)) {
-                        info.bestDelta = delta;
-                    }
+        for (TrackMatchInfo info : matchInfoMap.values()) {
+            float confidence = (float) info.matchCount / queryHashes.size();
+            if (confidence >= minConfidence) {
+                if (topMatches.size() < limit) {
+                    topMatches.add(info);
+                } else if (info.matchCount > Objects.requireNonNull(topMatches.peek()).matchCount) {
+                    topMatches.poll();
+                    topMatches.add(info);
                 }
             }
         }
 
-        return matchInfoMap.values().stream()
-                .filter(info -> {
-                    float confidence = (float) info.matchCount / queryHashes.size();
-                    return confidence >= minConfidence;
-                })
+        return topMatches.stream()
                 .sorted(Comparator.comparingInt((TrackMatchInfo info) -> info.matchCount).reversed())
-                .limit(limit)
                 .map(info -> {
-                    SongData songData = songs.get(info.trackId);
-                    return TrackMatch.create(
-                            info.trackId,
-                            songData.name,
-                            info.matchCount,
-                            queryHashes.size(),
-                            info.bestDelta * 1000L / 44100
-                    );
+                    final String trackId = info.trackId;
+                    final int matchCount = info.matchCount;
+                    final int finalBestDelta = info.bestDelta;
+                    return songRepository.findById(trackId)
+                            .map(songData -> TrackMatch.create(
+                                    songData.id,
+                                    songData.name,
+                                    matchCount,
+                                    queryHashes.size(),
+                                    finalBestDelta * 1000L / 44100
+                            ))
+                            .orElse(null);
                 })
+                .filter(Objects::nonNull)
                 .toArray(TrackMatch[]::new);
     }
 
-    private static class SongData {
-        final String id;
-        final String name;
+    private void findAndProcessMatchesForBestMatch(List<Long> queryHashes, Map<String, Map<Integer, Integer>> candidateMatches, int maxHammingDistance) {
+        for (int queryOffset = 0; queryOffset < queryHashes.size(); queryOffset++) {
+            long queryHash = queryHashes.get(queryOffset);
+            Set<Long> hashesToSearch = getHashesWithinHammingDistance(queryHash, maxHammingDistance);
 
-        SongData(String id, String name) {
-            this.id = id;
-            this.name = name;
+            for (long hash : hashesToSearch) {
+                List<SongMatch> matches = fingerprintRepository.findByHash(hash);
+                if (matches != null) {
+                    for (SongMatch match : matches) {
+                        int delta = match.offset - queryOffset;
+                        candidateMatches
+                                .computeIfAbsent(match.songId, k -> new HashMap<>())
+                                .merge(delta, 1, Integer::sum);
+                    }
+                }
+            }
         }
     }
 
-    private static class SongMatch {
-        final String songId;
-        final int offset;
+    private void findAndProcessMatchesForBestMatches(List<Long> queryHashes, Map<String, TrackMatchInfo> matchInfoMap) {
+        for (int queryOffset = 0; queryOffset < queryHashes.size(); queryOffset++) {
+            long queryHash = queryHashes.get(queryOffset);
+            Set<Long> hashesToSearch = getHashesWithinHammingDistance(queryHash, HAMMING_DISTANCE_THRESHOLD);
 
-        SongMatch(String songId, int offset) {
-            this.songId = songId;
-            this.offset = offset;
+            for (long hash : hashesToSearch) {
+                List<SongMatch> matches = fingerprintRepository.findByHash(hash);
+                if (matches != null) {
+                    for (SongMatch match : matches) {
+                        int delta = match.offset - queryOffset;
+                        TrackMatchInfo info = matchInfoMap.computeIfAbsent(match.songId,
+                                k -> new TrackMatchInfo(match.songId));
+
+                        info.matchCount++;
+                        info.deltaCounts.merge(delta, 1, Integer::sum);
+                        if (info.deltaCounts.get(delta) > info.deltaCounts.getOrDefault(info.bestDelta, 0)) {
+                            info.bestDelta = delta;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private Set<Long> getHashesWithinHammingDistance(long hash, int distance) {
+        Set<Long> results = new HashSet<>();
+        results.add(hash);
+        if (distance <= 0) {
+            return results;
+        }
+        findNeighbors(hash, distance, 0, results);
+        return results;
+    }
+
+    private void findNeighbors(long hash, int maxDistance, int startBit, Set<Long> results) {
+        if (maxDistance == 0) {
+            return;
+        }
+        for (int i = startBit; i < 48; i++) { // Assuming 48-bit hashes
+            long neighbor = hash ^ (1L << i);
+            if (results.add(neighbor)) {
+                findNeighbors(neighbor, maxDistance - 1, i + 1, results);
+            }
         }
     }
 
