@@ -7,9 +7,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.io.IOException;
 
+@Tag(name = "Audio", description = "Audio fingerprinting и идентификация треков")
 @RestController
 @RequestMapping("/api/audio")
 public class AudioController {
@@ -20,8 +24,10 @@ public class AudioController {
         this.audioMatchingService = audioMatchingService;
     }
 
+    @Operation(summary = "Идентификация трека по аудиофайлу", description = "Возвращает наиболее подходящий трек по аудиофайлу.")
     @PostMapping(path = "/identify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<MatchResponse> identifyTrack(
+            @Parameter(description = "Аудиофайл для идентификации", required = true)
             @RequestParam("audioFile") MultipartFile audioFile) {
 
         try {
@@ -45,10 +51,14 @@ public class AudioController {
         }
     }
 
+    @Operation(summary = "Поиск похожих треков", description = "Возвращает топ-N похожих треков по аудиофайлу.")
     @PostMapping(path = "/top-similar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<MatchResponse> findSimilarTracks(
+            @Parameter(description = "Аудиофайл для поиска", required = true)
             @RequestParam("audioFile") MultipartFile audioFile,
+            @Parameter(description = "Максимальное количество результатов", example = "20")
             @RequestParam(defaultValue = "20") int limit,
+            @Parameter(description = "Минимальная уверенность", example = "0.5")
             @RequestParam(defaultValue = "0.5") float minConfidence) {
 
         try {
@@ -68,10 +78,14 @@ public class AudioController {
         }
     }
 
+    @Operation(summary = "Регистрация нового трека", description = "Добавляет новый трек в базу по аудиофайлу.")
     @PostMapping(path = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<MatchResponse> registerTrack(
+            @Parameter(description = "ID трека", required = true)
             @RequestParam("trackId") String trackId,
+            @Parameter(description = "Название трека", required = true)
             @RequestParam("title") String title,
+            @Parameter(description = "Аудиофайл трека", required = true)
             @RequestParam("audioFile") MultipartFile audioFile) {
 
         try {
