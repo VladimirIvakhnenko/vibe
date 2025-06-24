@@ -6,6 +6,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -73,5 +74,63 @@ class TextSearchServiceTest {
     void testGetSuggestionsEmptyPrefix() {
         List<String> suggestions = service.getSuggestions("", 10);
         assertTrue(suggestions.isEmpty());
+    }
+
+    @Test
+    void testRegisterDuplicateTrack() {
+        TrackMetadata track = new TrackMetadata("10", "Duplicate Song", "Artist", "Album", "Lyrics", new HashSet<>(Arrays.asList("pop")), 2020);
+        service.registerTrack(track);
+        service.registerTrack(track); // повторная регистрация
+        List<TextSearchResult> results = service.searchTracks("Duplicate Song", 10, false);
+        assertFalse(results.isEmpty());
+        assertEquals("10", results.get(0).getTrackId());
+    }
+
+    @Test
+    void testRemoveNonexistentTrack() {
+        service.removeTrack("999"); // несуществующий id
+        List<TextSearchResult> results = service.searchTracks("Nonexistent", 10, false);
+        assertTrue(results.isEmpty());
+    }
+
+    @Test
+    void testUpdateNonexistentTrack() {
+        TrackMetadata track = new TrackMetadata("404", "Ghost", "Nobody", "Nowhere", "None", new HashSet<>(Arrays.asList("none")), 2000);
+        service.updateTrack(track); // обновление несуществующего
+        List<TextSearchResult> results = service.searchTracks("Ghost", 10, false);
+        assertFalse(results.isEmpty());
+        assertEquals("404", results.get(0).getTrackId());
+    }
+
+    @Test
+    void testSearchWithSynonym() {
+        TrackMetadata track = new TrackMetadata("11", "The Beatles", "The Beatles", "Album", "Lyrics", new HashSet<>(Arrays.asList("rock")), 1967);
+        service.registerTrack(track);
+        List<TextSearchResult> results = service.searchTracks("beetles", 10, true);
+        assertFalse(results.isEmpty());
+        assertEquals("11", results.get(0).getTrackId());
+    }
+
+    @Test
+    void testSearchWithLimit() {
+        for (int i = 0; i < 20; i++) {
+            service.registerTrack(new TrackMetadata("t"+i, "Song"+i, "Artist", "Album", "Lyrics", new HashSet<>(Arrays.asList("pop")), 2020));
+        }
+        List<TextSearchResult> results = service.searchTracks("Song", 5, false);
+        assertTrue(results.size() <= 5);
+    }
+
+    @Test
+    void testSearchNonexistent() {
+        List<TextSearchResult> results = service.searchTracks("NoSuchSong", 10, false);
+        assertTrue(results.isEmpty());
+    }
+
+    @Test
+    void testRegisterTrackWithNullFields() {
+        assertThrows(NullPointerException.class, () -> {
+            TrackMetadata track = new TrackMetadata("12", null, null, null, null, new HashSet<>(), 0);
+            service.registerTrack(track);
+        });
     }
 } 

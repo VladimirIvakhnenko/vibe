@@ -3,6 +3,7 @@ package org.textsearch.models;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
@@ -37,5 +38,57 @@ class TrackMetadataTest {
         assertTrue(text.contains("al"));
         assertTrue(text.contains("ly"));
         assertTrue(text.contains("g1"));
+    }
+
+    @Test
+    void testNullFields() {
+        assertThrows(NullPointerException.class, () -> {
+            new TrackMetadata(null, null, null, null, null, null, 0);
+        });
+    }
+
+    @Test
+    void testEmptyGenres() {
+        TrackMetadata meta = new TrackMetadata("id2", "T", "A", "Al", "Ly", Set.of(), 2020);
+        assertEquals(Set.of(), meta.getGenres());
+    }
+
+    @Test
+    void testLongStrings() {
+        String longStr = "a".repeat(1000);
+        TrackMetadata meta = new TrackMetadata(longStr, longStr, longStr, longStr, longStr, Set.of(longStr), 2020);
+        assertEquals(longStr, meta.getTrackId());
+        assertEquals(longStr, meta.getTitle());
+        assertEquals(longStr, meta.getArtist());
+        assertEquals(longStr, meta.getAlbum());
+        assertEquals(longStr, meta.getLyrics());
+        assertEquals(Set.of(longStr), meta.getGenres());
+    }
+
+    @Test
+    void testInequality() {
+        TrackMetadata m1 = new TrackMetadata("id1", "T", "A", null, null, Set.of(), 1);
+        TrackMetadata m2 = new TrackMetadata("id2", "T", "A", null, null, Set.of(), 1);
+        assertTrue(!m1.equals(m2));
+    }
+
+    @Test
+    void testToStringWithNulls() {
+        assertThrows(NullPointerException.class, () -> {
+            new TrackMetadata(null, null, null, null, null, null, 0).toString();
+        });
+    }
+
+    @Test
+    void testSearchableTextWithNulls() {
+        assertThrows(NullPointerException.class, () -> {
+            new TrackMetadata(null, null, null, null, null, null, 0).getSearchableText();
+        });
+    }
+
+    @Test
+    void testEqualsDifferentObjects() {
+        TrackMetadata m1 = new TrackMetadata("id1", "T", "A", null, null, Set.of(), 1);
+        assertTrue(!m1.equals("string"));
     }
 } 

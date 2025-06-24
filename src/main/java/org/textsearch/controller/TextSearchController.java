@@ -1,20 +1,31 @@
 package org.textsearch.controller;
 
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.textsearch.dto.TextSearchResponse;
 import org.textsearch.models.TrackMetadata;
 import org.textsearch.services.ITextSearchService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Set;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * REST контроллер для текстового поиска треков
  */
 @RestController
 @RequestMapping("/api/textsearch")
+@Tag(name = "Text Search", description = "API для текстового поиска по трекам")
 public class TextSearchController {
 
     private final ITextSearchService textSearchService;
@@ -26,6 +37,7 @@ public class TextSearchController {
     /**
      * Поиск треков по текстовому запросу
      */
+    @Operation(summary = "Поиск треков", description = "Выполняет текстовый поиск по трекам с поддержкой нечеткого поиска и синонимов")
     @GetMapping("/search")
     public ResponseEntity<TextSearchResponse> searchTracks(
             @RequestParam("q") String query,
@@ -52,6 +64,7 @@ public class TextSearchController {
     /**
      * Регистрация метаданных трека для поиска
      */
+    @Operation(summary = "Регистрация трека", description = "Регистрирует трек для текстового поиска")
     @PostMapping("/register")
     public ResponseEntity<TextSearchResponse> registerTrack(
             @RequestParam("trackId") String trackId,
@@ -89,6 +102,7 @@ public class TextSearchController {
     /**
      * Получение предложений для автодополнения
      */
+    @Operation(summary = "Подсказки", description = "Возвращает подсказки по префиксу для автодополнения")
     @GetMapping("/suggestions")
     public ResponseEntity<List<String>> getSuggestions(
             @RequestParam("prefix") String prefix,
@@ -110,6 +124,7 @@ public class TextSearchController {
     /**
      * Удаление трека из поискового индекса
      */
+    @Operation(summary = "Удаление трека", description = "Удаляет трек из поискового индекса по trackId")
     @DeleteMapping("/tracks/{trackId}")
     public ResponseEntity<TextSearchResponse> removeTrack(@PathVariable String trackId) {
 
@@ -137,6 +152,7 @@ public class TextSearchController {
     /**
      * Обновление метаданных трека
      */
+    @Operation(summary = "Обновление трека", description = "Обновляет метаданные трека по trackId")
     @PutMapping("/tracks/{trackId}")
     public ResponseEntity<TextSearchResponse> updateTrack(
             @PathVariable String trackId,

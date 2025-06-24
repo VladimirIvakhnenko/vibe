@@ -46,6 +46,47 @@ class SynonymManagerTest {
         assertEquals("unknownband", result[0]);
     }
 
+    @Test
+    void testNormalizeTextCaseInsensitive() {
+        SynonymManager sm = new SynonymManager();
+        String[] result = sm.normalizeText("THE BEATLES");
+        boolean found = false;
+        for (String s : result) if (s.equals("beatles")) found = true;
+        assertTrue(found);
+    }
+
+    @Test
+    void testNormalizeTextWithSpaces() {
+        SynonymManager sm = new SynonymManager();
+        String[] result = sm.normalizeText("red hot chili peppers");
+        boolean found = false;
+        for (String s : result) if (s.equals("rhcp")) found = true;
+        assertTrue(found);
+    }
+
+    @Test
+    void testNormalizeTextWithHyphen() {
+        SynonymManager sm = new SynonymManager();
+        String[] result = sm.normalizeText("hip hop");
+        boolean found = false;
+        for (String s : result) if (s.equals("hip-hop")) found = true;
+        assertTrue(found);
+    }
+
+    @Test
+    void testNormalizeTextEmptyString() {
+        SynonymManager sm = new SynonymManager();
+        String[] result = sm.normalizeText("");
+        assertEquals(0, result.length);
+    }
+
+    @Test
+    void testNormalizeTextUnknownWord() {
+        SynonymManager sm = new SynonymManager();
+        String[] result = sm.normalizeText("abracadabra");
+        assertTrue(result.length == 1 && result[0].equals("abracadabra"));
+    }
+
 //    @Test
 //    void testSynonyms() {
 //        SynonymManager sm = new SynonymManager();
