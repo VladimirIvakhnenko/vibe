@@ -31,4 +31,40 @@ class LevenshteinDistanceTest {
         assertTrue(LevenshteinDistance.isSimilarNormalized("abc", "ab", 0.5));
         assertFalse(LevenshteinDistance.isSimilarNormalized("abc", "ab", 0.1));
     }
+
+    @Test
+    void testEmptyStrings() {
+        assertEquals(0, LevenshteinDistance.calculate("", ""));
+        assertEquals(1, LevenshteinDistance.calculate("a", ""));
+        assertEquals(1, LevenshteinDistance.calculate("", "a"));
+    }
+
+    @Test
+    void testLongStrings() {
+        String s1 = "a".repeat(100);
+        String s2 = "a".repeat(99) + "b";
+        assertEquals(1, LevenshteinDistance.calculate(s1, s2));
+    }
+
+    @Test
+    void testNonAscii() {
+        assertEquals(1, LevenshteinDistance.calculate("привет", "привед"));
+    }
+
+    @Test
+    void testSymmetry() {
+        assertEquals(LevenshteinDistance.calculate("abc", "cba"), LevenshteinDistance.calculate("cba", "abc"));
+    }
+
+    @Test
+    void testSelfSimilarity() {
+        assertTrue(LevenshteinDistance.isSimilar("test", "test", 0));
+        assertTrue(LevenshteinDistance.isSimilarNormalized("test", "test", 0.0));
+    }
+
+    @Test
+    void testSingleCharWords() {
+        assertEquals(1, LevenshteinDistance.calculate("a", "b"));
+        assertEquals(1.0, LevenshteinDistance.calculateNormalized("a", "b"));
+    }
 } 

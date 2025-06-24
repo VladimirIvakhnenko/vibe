@@ -69,4 +69,37 @@ class InMemoryTextSearchDatabaseTest {
     void testGetStats() {
         assertTrue(db.getStats().getTrackCount() >= 2);
     }
+
+    @Test
+    void testAddDuplicateTrack() {
+        db.addTrack(track1);
+        List<TextSearchResult> results = db.searchTracks("Hello World", 10, false);
+        assertFalse(results.isEmpty());
+        assertEquals("1", results.get(0).getTrackId());
+    }
+
+    @Test
+    void testRemoveNonexistentTrack() {
+        db.removeTrack("999");
+        // не должно быть исключения, база не меняется
+        List<TextSearchResult> results = db.searchTracks("Hello World", 10, false);
+        assertFalse(results.isEmpty());
+    }
+
+
+    @Test
+    void testSearchWithSynonym() {
+        TrackMetadata beatles = new TrackMetadata("b1", "The Beatles", "The Beatles", null, null, Set.of("rock"), 1967);
+        db.addTrack(beatles);
+        List<TextSearchResult> results = db.searchTracks("beetles", 10, true);
+        assertFalse(results.isEmpty());
+        assertEquals("b1", results.get(0).getTrackId());
+    }
+
+    @Test
+    void testSearchEmptyDatabase() {
+        InMemoryTextSearchDatabase emptyDb = new InMemoryTextSearchDatabase();
+        List<TextSearchResult> results = emptyDb.searchTracks("Hello", 10, false);
+        assertTrue(results.isEmpty());
+    }
 } 
