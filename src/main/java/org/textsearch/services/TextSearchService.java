@@ -11,6 +11,11 @@ import org.textsearch.indexing.InvertedIndex;
 import org.textsearch.models.TextSearchResult;
 import org.textsearch.models.TrackMetadata;
 import org.textsearch.utils.SynonymManager;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import java.io.InputStreamReader;
+import java.io.InputStream;
 
 /**
  * Реализация сервиса текстового поиска
@@ -27,6 +32,7 @@ public class TextSearchService implements ITextSearchService {
     public TextSearchService(TextSearchDatabase db) {
         this.db = db;
         this.synonymManager = new SynonymManager();
+        // loadTracksFromJson("spotify_1000_tracks_20250618_153243.json");
     }
     
     @Override
@@ -145,5 +151,42 @@ public class TextSearchService implements ITextSearchService {
 
     public TrackMetadata getTrack(String trackId) {
         return db.getTrack(trackId);
+    }
+
+    /**
+     * Загрузка треков из JSON-файла (например, resources/spotify_1000_tracks_20250618_153243.json)
+     */
+    public void loadTracksFromJson(String resourcePath) {
+        try {
+            InputStream is = getClass().getClassLoader().getResourceAsStream(resourcePath);
+            if (is == null) throw new RuntimeException("Resource not found: " + resourcePath);
+            JsonObject root = JsonParser.parseReader(new InputStreamReader(is)).getAsJsonObject();
+            JsonArray tracks = root.getAsJsonArray("tracks");
+            if (tracks != null) {
+                for (var elem : tracks) {
+                    JsonObject node = elem.getAsJsonObject();
+                    String id = node.get("id").getAsString();
+                    String title = node.get("name").getAsString();
+                    String artist = node.getAsJsonArray("artists").size() > 0 ? node.getAsJsonArray("artists").get(0).getAsString() : "";
+                    String album = node.has("album") ? node.get("album").getAsString() : null;
+                    String lyrics = null;
+                    java.util.HashSet<String> genres = new java.util.HashSet<>();
+                    if (node.has("genres") && node.getAsJsonArray("genres").size() > 0) {
+                        for (var g : node.getAsJsonArray("genres")) genres.add(g.getAsString());
+                    }
+                    int year = 0;
+                    if (node.has("release_date")) {
+                        String date = node.get("release_date").getAsString();
+                        if (date.length() >= 4) {
+                            try { year = Integer.parseInt(date.substring(0, 4)); } catch (Exception ignore) {}
+                        }
+                    }
+                    TrackMetadata meta = new TrackMetadata(id, title, artist, album, lyrics, genres, year);
+                    registerTrack(meta);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Ошибка загрузки треков из json: " + e.getMessage(), e);
+        }
     }
 } 

@@ -186,4 +186,16 @@ public class TextSearchController {
                     .body(TextSearchResponse.error("Error updating track: " + e.getMessage()));
         }
     }
+
+    @Operation(summary = "Загрузить треки из JSON", description = "Загружает треки из файла ресурсов в индекс поиска")
+    @PostMapping("/load-json")
+    public ResponseEntity<TextSearchResponse> loadTracksFromJson(@RequestParam(value = "file", defaultValue = "spotify_1000_tracks_20250618_153243.json") String file) {
+        try {
+            textSearchService.loadTracksFromJson(file);
+            return ResponseEntity.ok(new TextSearchResponse(true, "Треки успешно загружены из json", null, null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(TextSearchResponse.error("Ошибка загрузки треков: " + e.getMessage()));
+        }
+    }
 } 

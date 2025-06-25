@@ -9,13 +9,13 @@ public class SCCFinder {
     public static List<Set<TrackNode>> findSCCs(Graph<TrackNode, DefaultWeightedEdge> graph) {
         Set<TrackNode> visited = new HashSet<>();
         Deque<TrackNode> order = new ArrayDeque<>();
-        // 1. DFS по исходному графу для получения порядка обхода
+
         for (TrackNode v : graph.vertexSet()) {
             if (!visited.contains(v)) dfs1(graph, v, visited, order);
         }
-        // 2. Транспонируем граф
+
         Graph<TrackNode, DefaultWeightedEdge> transposed = transpose(graph);
-        // 3. DFS по транспонированному графу в порядке, обратном завершению
+
         visited.clear();
         List<Set<TrackNode>> sccs = new ArrayList<>();
         while (!order.isEmpty()) {

@@ -44,4 +44,9 @@ public interface ITextSearchService {
      * @param metadata новые метаданные
      */
     void updateTrack(TrackMetadata metadata);
+    
+    /**
+     * Загрузка треков из JSON-файла
+     */
+    void loadTracksFromJson(String resourcePath);
 } 

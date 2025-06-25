@@ -79,4 +79,15 @@ public class RecommendationController {
                 "artist", t.artist
         )).collect(Collectors.toList()));
     }
+
+    @Operation(summary = "Загрузить треки из JSON", description = "Загружает треки из файла ресурсов в граф рекомендаций")
+    @PostMapping("/load-json")
+    public Map<String, String> loadTracksFromJson(@RequestParam(value = "file", defaultValue = "spotify_1000_tracks_20250618_153243.json") String file) {
+        try {
+            graphService.loadTracksFromJson(file);
+            return Map.of("status", "ok", "message", "Треки успешно загружены из json");
+        } catch (Exception e) {
+            return Map.of("status", "error", "message", "Ошибка загрузки треков: " + e.getMessage());
+        }
+    }
 } 

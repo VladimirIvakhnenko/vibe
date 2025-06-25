@@ -4,6 +4,11 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import org.springframework.stereotype.Service;
 import org.recommendation.utils.SCCFinder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import java.io.InputStreamReader;
+import java.io.InputStream;
 
 import java.util.*;
 
@@ -169,7 +174,7 @@ public class RecommendationGraphService {
             List<Set<TrackNode>> sccs = SCCFinder.findSCCs(graph);
             Set<TrackNode> userScc = null;
             if (liked.isEmpty()) {
-                // Берём самую большую компоненту
+
                 userScc = sccs.stream().max(Comparator.comparingInt(Set::size)).orElse(Set.of());
             } else {
                 TrackNode likedNode = trackMap.get(liked.iterator().next());
@@ -186,6 +191,30 @@ public class RecommendationGraphService {
         } else {
             // Обычные рекомендации
             return recommend(userId, limit);
+        }
+    }
+
+    /**
+     * Загрузка треков из JSON-файла
+     */
+    public void loadTracksFromJson(String resourcePath) {
+        try {
+            InputStream is = getClass().getClassLoader().getResourceAsStream(resourcePath);
+            if (is == null) throw new RuntimeException("Resource not found: " + resourcePath);
+            JsonObject root = JsonParser.parseReader(new InputStreamReader(is)).getAsJsonObject();
+            JsonArray tracks = root.getAsJsonArray("tracks");
+            if (tracks != null) {
+                for (var elem : tracks) {
+                    JsonObject node = elem.getAsJsonObject();
+                    String id = node.get("id").getAsString();
+                    String title = node.get("name").getAsString();
+                    String genre = node.getAsJsonArray("genres").size() > 0 ? node.getAsJsonArray("genres").get(0).getAsString() : null;
+                    String artist = node.getAsJsonArray("artists").size() > 0 ? node.getAsJsonArray("artists").get(0).getAsString() : null;
+                    addTrack(id, title, genre, artist);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Ошибка загрузки треков из json: " + e.getMessage(), e);
         }
     }
 } 
